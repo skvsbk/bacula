@@ -1,0 +1,8 @@
+---
+   - hosts: centos
+     tasks:
+       - name: install system tools
+         yum: name={{item}} state=latest
+         with_items:
+           - sysstat
+        

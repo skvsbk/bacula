@@ -1,0 +1,84 @@
+---
+## Копирование файлов репозиториев и ключей
+    - name: Add webmin.repo
+      copy: src=webmin.repo dest=/etc/yum.repos.d/ owner=root group=root
+      register: webmin
+    - name: Add zabbix.repo
+      copy: src=zabbix.repo dest=/etc/yum.repos.d/ owner=root group=root
+      register: zabbix
+    - name: Add zabbix rpm-gpg
+      copy: src=RPM-GPG-KEY-ZABBIX dest=/etc/pki/rpm-gpg/ owner=root group=root
+    - name: Add zabbix rpm-gpg1
+      copy: src=RPM-GPG-KEY-ZABBIX-A14FE591 dest=/etc/pki/rpm-gpg/ owner=root group=root
+    - rpm_key:
+        state: present
+        key: http://www.webmin.com/jcameron-key.asc
+    - name: Install EPEL repo
+      yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
+    - name: Import EPEL GPG key
+      rpm_key:
+        key: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+        state: present
+    - name: Install remi repo
+      yum:
+        name: http://rpms.famillecollet.com/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm
+        state: present
+    - name: Import remi GPG key
+      rpm_key:
+        key: http://rpms.remirepo.net/RPM-GPG-KEY-remi
+        state: present
+    - selinux:
+        state: disabled
+
+### Установка софта
+    - name: install software and utils
+      yum: name={{item}} state=latest
+      with_items:
+        - nano
+        - mc
+        - tzdata
+        - bind-utils
+        - net-tools
+        - traceroute
+        - wget
+        - iftop
+        - htop
+        - atop
+        - rsync
+        - webmin
+        - sysstat
+        - httpd
+        - gcc
+        - gcc-c++
+        - mysql-devel
+        - libacl-devel
+        - zabbix-server-mysql 
+        - zabbix-web-mysql
+        - zabbix-agent
+        - mariadb-server
+      tags: soft 
+
+    - name: install ntpd
+      yum: name=ntp state=latest
+      tags: ntp
+
+    - file:
+        src: /usr/share/zoneinfo/Europe/Moscow
+        dest:  /etc/localtime
+        state: link
+      tags: ntp
+
+## Запуск ntp и zabbix-agent
+    - name: start_ntpd
+      copy: src=ntp.conf dest=/etc/ owner=root group=root
+      notify:
+        - firewalld stop
+        - chronyd stop
+        - ntpd start
+      tags: ntp
+
+## Распаковка файла раскраски
+    - unarchive: src=colour.tar dest=/root
+      tags: colour

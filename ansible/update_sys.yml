@@ -1,0 +1,11 @@
+---
+- hosts: centos
+  user: root
+  roles:
+    - upd_centos
+
+- hosts: ubuntu
+  user: root
+  roles:
+    - upd_ubuntu
+

@@ -1,0 +1,5 @@
+---
+   - hosts: localhost
+     tasks:
+       - name: Make sure NTP is started up
+         service: name=ntpd state=started enabled=yes   

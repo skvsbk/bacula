@@ -1,0 +1,6 @@
+---
+- hosts: zabbix
+  user: root
+  roles:
+    - zabbix
+

@@ -1,0 +1,6 @@
+---
+- hosts: xen
+  user: root
+  roles:
+    - xen
+

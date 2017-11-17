@@ -1,0 +1,6 @@
+#!/bin/bash
+
+/home/bacula/bacula2telegram.sh "372582260" "$1" "$2"
+/home/bacula/bacula2telegram.sh "94287198" "$1" "$2"
+/home/bacula/bacula2telegram.sh "342997683" "$1" "$2"
+

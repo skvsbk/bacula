@@ -1,0 +1,4 @@
+---
+    - name: Update Ubuntu systems
+      apt: upgrade=dist
+
